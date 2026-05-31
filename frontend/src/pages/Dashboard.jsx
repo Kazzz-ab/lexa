@@ -1,0 +1,194 @@
+import { motion } from 'framer-motion';
+import { Users, Scale, Briefcase, DollarSign, TrendingUp, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+
+const stats = [
+  { label: 'Active Clients', value: '312', change: '+8%', icon: Users, color: '#1B3A6B', bg: 'rgba(27,58,107,0.08)', trend: 'up' },
+  { label: 'Attorneys', value: '18', change: 'All active', icon: Scale, color: '#C9A84C', bg: 'rgba(201,168,76,0.08)', trend: 'neutral' },
+  { label: 'Open Cases', value: '94', change: '+3 this week', icon: Briefcase, color: '#2E5FA3', bg: 'rgba(46,95,163,0.08)', trend: 'up' },
+  { label: 'Billable (MTD)', value: '$284K', change: '12 overdue', icon: DollarSign, color: '#B45309', bg: 'rgba(180,83,9,0.08)', trend: 'down' },
+];
+
+const recentCases = [
+  { client: 'Harrington & Sons Ltd.', attorney: 'M. Ashworth', matter: 'Corporate Merger — Series B', status: 'active', priority: 'high' },
+  { client: 'Elena Vasquez', attorney: 'J. Pemberton', matter: 'Wrongful Termination', status: 'pending', priority: 'medium' },
+  { client: 'Kofi Mensah', attorney: 'A. Sterling', matter: 'Real Estate Closing', status: 'open', priority: 'low' },
+  { client: 'TechNova Inc.', attorney: 'M. Ashworth', matter: 'IP Licensing Agreement', status: 'active', priority: 'high' },
+  { client: 'Diana Okonkwo', attorney: 'J. Pemberton', matter: 'Custody Dispute', status: 'pending', priority: 'urgent' },
+];
+
+const statusConfig = {
+  active: { label: 'Active', color: '#1B3A6B', bg: 'rgba(27,58,107,0.1)' },
+  open: { label: 'Open', color: '#2E5FA3', bg: 'rgba(46,95,163,0.1)' },
+  pending: { label: 'Pending', color: '#B45309', bg: 'rgba(180,83,9,0.1)' },
+  closed: { label: 'Closed', color: '#6B6B7B', bg: 'rgba(107,107,123,0.1)' },
+};
+
+const priorityDot = { low: '#6B6B7B', medium: '#2E5FA3', high: '#B45309', urgent: '#DC2626' };
+
+const container = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
+const item = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 90, damping: 18 } } };
+
+export default function Dashboard() {
+  return (
+    <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+
+      {/* Hero greeting */}
+      <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}
+        className="mb-10">
+        <div className="flex items-end gap-3 flex-wrap">
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>
+            Welcome back, <span className="gradient-text">Counsel</span>
+          </h1>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--muted)', fontStyle: 'italic', marginBottom: '0.2rem' }}>
+            Esq.
+          </span>
+        </div>
+        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', marginTop: '0.4rem', fontStyle: 'italic' }}>
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} — Your firm's matters at a glance.
+        </p>
+      </motion.div>
+
+      {/* 3D Stat cards */}
+      <motion.div variants={container} initial="hidden" animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        {stats.map((stat) => (
+          <motion.div key={stat.label} variants={item}
+            className="card-3d rounded-xl p-5 cursor-default"
+            style={{
+              background: 'var(--surface)',
+              border: '1px solid rgba(201,168,76,0.15)',
+              boxShadow: '0 2px 12px rgba(27,58,107,0.07)',
+            }}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-11 h-11 rounded-lg flex items-center justify-center float-anim border"
+                style={{ background: stat.bg, borderColor: 'rgba(201,168,76,0.15)' }}>
+                <stat.icon size={19} style={{ color: stat.color }} />
+              </div>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-md"
+                style={{
+                  background: stat.trend === 'up' ? 'rgba(27,58,107,0.08)' : stat.trend === 'down' ? 'rgba(180,83,9,0.08)' : 'rgba(201,168,76,0.1)',
+                  color: stat.trend === 'up' ? '#1B3A6B' : stat.trend === 'down' ? '#B45309' : '#8B6914',
+                  fontFamily: 'var(--font-body)',
+                  border: '1px solid',
+                  borderColor: stat.trend === 'up' ? 'rgba(27,58,107,0.12)' : stat.trend === 'down' ? 'rgba(180,83,9,0.12)' : 'rgba(201,168,76,0.2)',
+                }}>
+                {stat.change}
+              </span>
+            </div>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
+              {stat.value}
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.35rem' }}>
+              {stat.label}
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Active cases table */}
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.55 }}
+          className="lg:col-span-2 rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
+          <div className="px-6 py-5 flex items-center justify-between"
+            style={{ borderBottom: '1px solid rgba(201,168,76,0.12)' }}>
+            <div>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--text)' }}>
+                Active Matters
+              </h2>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.77rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                {recentCases.length} cases in progress
+              </p>
+            </div>
+            <Briefcase size={15} className="text-[#6B6B7B]" />
+          </div>
+          <div className="divide-y" style={{ borderColor: 'rgba(201,168,76,0.08)' }}>
+            {recentCases.map((c, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 + i * 0.07 }}
+                className="px-6 py-4 flex items-start gap-4 hover:bg-[#F5F2ED] transition-colors cursor-pointer">
+                <div className="flex-1 min-w-0">
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, color: 'var(--text)', fontSize: '0.88rem' }} className="truncate">
+                    {c.matter}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.77rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                    {c.client} · {c.attorney}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: priorityDot[c.priority] }} />
+                  <span className="px-2.5 py-1 rounded-md text-xs font-medium"
+                    style={{
+                      background: statusConfig[c.status].bg,
+                      color: statusConfig[c.status].color,
+                      fontFamily: 'var(--font-body)',
+                      border: '1px solid',
+                      borderColor: `${statusConfig[c.status].color}20`,
+                    }}>
+                    {statusConfig[c.status].label}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Sidebar metrics */}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.55 }}
+          className="space-y-4">
+
+          {/* Revenue card */}
+          <div className="rounded-xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #1B3A6B 0%, #2E5FA3 100%)',
+              border: '1px solid rgba(201,168,76,0.3)',
+              boxShadow: '0 8px 32px rgba(27,58,107,0.25)',
+            }}>
+            <div className="flex items-center gap-2 mb-3">
+              <TrendingUp size={14} className="text-[#C9A84C]" />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.06em' }} className="uppercase">
+                Monthly Billing
+              </span>
+            </div>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 700, color: 'white', lineHeight: 1 }}>
+              $284,920
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.77rem', color: 'rgba(201,168,76,0.8)', marginTop: '0.3rem' }}>
+              +18.4% vs last month
+            </div>
+            <div className="mt-3 h-1.5 rounded-full bg-white/15">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: '71%' }}
+                transition={{ delay: 0.8, duration: 1.2, ease: 'easeOut' }}
+                className="h-full rounded-full"
+                style={{ background: 'linear-gradient(90deg, #C9A84C, #E8CC80)' }}
+              />
+            </div>
+          </div>
+
+          {/* Case status */}
+          <div className="rounded-xl p-5"
+            style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.88rem', color: 'var(--text)', marginBottom: '1rem' }}>
+              Case Breakdown
+            </h3>
+            {[
+              { label: 'Active', count: 47, icon: CheckCircle2, color: '#1B3A6B' },
+              { label: 'Pending Review', count: 28, icon: Clock, color: '#C9A84C' },
+              { label: 'Overdue Filings', count: 6, icon: AlertTriangle, color: '#DC2626' },
+            ].map((s) => (
+              <div key={s.label} className="flex items-center gap-3 mb-3.5 last:mb-0">
+                <s.icon size={14} style={{ color: s.color }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--muted)', fontStyle: 'italic', flex: 1 }}>{s.label}</span>
+                <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, color: 'var(--text)', fontSize: '0.9rem' }}>{s.count}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
