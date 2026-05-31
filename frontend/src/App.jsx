@@ -3,6 +3,10 @@ import { useAuth } from './hooks/useAuth.js';
 import Header from './components/layout/Header.jsx';
 import Footer from './components/layout/Footer.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Clients from './pages/Clients.jsx';
+import Attorneys from './pages/Attorneys.jsx';
+import Cases from './pages/Cases.jsx';
+import Invoices from './pages/Invoices.jsx';
 import Login from './pages/Login.jsx';
 
 function ProtectedLayout({ children }) {
@@ -22,6 +26,10 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
+      <Route path="/clients" element={<ProtectedLayout><Clients /></ProtectedLayout>} />
+      <Route path="/attorneys" element={<ProtectedLayout><Attorneys /></ProtectedLayout>} />
+      <Route path="/cases" element={<ProtectedLayout><Cases /></ProtectedLayout>} />
+      <Route path="/invoices" element={<ProtectedLayout><Invoices /></ProtectedLayout>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

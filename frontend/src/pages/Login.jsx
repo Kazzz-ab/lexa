@@ -133,11 +133,10 @@ export default function Login() {
                 <input
                   type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                   placeholder="attorney@firm.com"
-                  style={{ fontFamily: 'var(--font-body)', fontStyle: 'italic' }}
                   className="w-full pl-10 pr-4 py-3 rounded-lg text-[#1A1A2E] text-sm focus:outline-none transition-all placeholder:text-[#B8B5AE]"
                   onFocus={(e) => { e.target.style.border = '1px solid #C9A84C'; e.target.style.boxShadow = '0 0 0 3px rgba(201,168,76,0.1)'; }}
                   onBlur={(e) => { e.target.style.border = '1px solid rgba(201,168,76,0.25)'; e.target.style.boxShadow = 'none'; }}
-                  style={{ background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)', fontFamily: 'var(--font-body)' }}
+                  style={{ background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}
                 />
               </div>
             </div>
