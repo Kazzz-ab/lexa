@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import api from '../lib/api.js';
 
 export const useAuth = create((set) => ({
-  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  user: (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; } })(),
   token: localStorage.getItem('token'),
 
   login: async (email, password) => {
@@ -16,5 +16,10 @@ export const useAuth = create((set) => ({
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     set({ user: null, token: null });
+  },
+
+  setUser: (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    set({ user });
   },
 }));

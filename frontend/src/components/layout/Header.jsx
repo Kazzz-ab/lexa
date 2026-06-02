@@ -130,11 +130,13 @@ export default function Header() {
                     className="absolute right-0 top-full mt-2 w-52 glass rounded-xl shadow-xl overflow-hidden border border-[#C9A84C]/15"
                   >
                     <div className="p-1.5">
-                      <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                      <button onClick={() => { setProfileOpen(false); navigate('/profile'); }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
                         <User size={14} /> My Profile
                       </button>
-                      <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
-                        <Settings size={14} /> Firm Settings
+                      <button onClick={() => { setProfileOpen(false); navigate('/settings'); }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                        <Settings size={14} /> Settings
                       </button>
                       <div className="my-1 border-t border-[#C9A84C]/15" />
                       <button

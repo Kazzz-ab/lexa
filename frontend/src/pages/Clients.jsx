@@ -1,7 +1,39 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, Plus, Phone, Mail, Building2, MoreHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Search, Plus, Phone, Mail, Building2, MoreHorizontal, Pencil, Trash2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../lib/api.js';
+
+function RowMenu({ onEdit, onDelete }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button onClick={(e) => { e.stopPropagation(); setOpen(o => !o); }} className="p-1.5 rounded-lg hover:bg-[#F5F2ED] text-[#6B6B7B]">
+        <MoreHorizontal size={15} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="absolute right-0 z-20 mt-1 w-40 rounded-xl overflow-hidden"
+              style={{ background: 'var(--surface)', boxShadow: '0 8px 24px rgba(27,58,107,0.12)', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <button onClick={() => { setOpen(false); onEdit(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-[#F5F2ED] transition-colors"
+                style={{ fontFamily: 'var(--font-body)', color: 'var(--text)' }}>
+                <Pencil size={13} /> Edit Client
+              </button>
+              <button onClick={() => { setOpen(false); onDelete(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-red-50 transition-colors text-red-500"
+                style={{ fontFamily: 'var(--font-body)' }}>
+                <Trash2 size={13} /> Remove
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function ClientModal({ client, onClose, onSave }) {
   const isEdit = Boolean(client?._id);
@@ -100,6 +132,11 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
 
+  const handleDelete = async (id) => {
+    await api.delete(`/clients/${id}`);
+    load();
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -194,9 +231,7 @@ export default function Clients() {
                   {c.email && <div className="flex items-center gap-1.5 text-xs text-[#6B6B7B]" style={{ fontFamily: 'var(--font-body)' }}><Mail size={10} /> {c.email}</div>}
                 </div>
                 <div className="col-span-1 flex justify-end">
-                  <button onClick={(e) => { e.stopPropagation(); setModal(c); }} className="p-1.5 rounded-lg hover:bg-[#F5F2ED] text-[#6B6B7B]">
-                    <MoreHorizontal size={15} />
-                  </button>
+                  <RowMenu onEdit={() => setModal(c)} onDelete={() => handleDelete(c._id)} />
                 </div>
               </motion.div>
             ))}

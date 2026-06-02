@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("paralegal")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  attorney  Attorney?
+}
+
+model Client {
+  id         String    @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  company    String?
+  clientType String    @default("individual")
+  referredBy String?
+  notes      String?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  cases      Case[]
+  invoices   Invoice[]
+}
+
+model Attorney {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  barNumber     String    @unique
+  practiceAreas String[]  @default([])
+  hourlyRate    Float     @default(0)
+  bio           String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  leadCases     Case[]    @relation("LeadAttorney")
+  invoices      Invoice[]
+}
+
+model Case {
+  id             String    @id @default(cuid())
+  caseNumber     String    @unique
+  title          String
+  clientId       String
+  client         Client    @relation(fields: [clientId], references: [id])
+  leadAttorneyId String
+  leadAttorney   Attorney  @relation("LeadAttorney", fields: [leadAttorneyId], references: [id])
+  practiceArea   String
+  caseType       String    @default("other")
+  status         String    @default("open")
+  priority       String    @default("medium")
+  openedAt       DateTime  @default(now())
+  closedAt       DateTime?
+  courtDate      DateTime?
+  description    String?
+  notes          String?
+  documents      Json      @default("[]")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  invoices       Invoice[]
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  clientId      String
+  client        Client    @relation(fields: [clientId], references: [id])
+  caseId        String?
+  case          Case?     @relation(fields: [caseId], references: [id])
+  attorneyId    String?
+  attorney      Attorney? @relation(fields: [attorneyId], references: [id])
+  invoiceNumber String    @unique
+  billingType   String    @default("hourly")
+  lineItems     Json      @default("[]")
+  subtotal      Float
+  tax           Float     @default(0)
+  total         Float
+  status        String    @default("draft")
+  dueDate       DateTime?
+  paidAt        DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

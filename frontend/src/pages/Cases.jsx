@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Plus, X, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Briefcase, Plus, X, ChevronLeft, ChevronRight, MoreHorizontal, Pencil, XCircle } from 'lucide-react';
 import api from '../lib/api.js';
 
 const STATUS_COLORS = {
@@ -13,25 +13,42 @@ const STATUS_COLORS = {
 
 const PRIORITY_COLOR = { low: '#6B6B7B', medium: '#2E5FA3', high: '#B45309', urgent: '#DC2626' };
 
-function CaseModal({ onClose, onSave }) {
-  const [form, setForm] = useState({ title: '', client: '', leadAttorney: '', practiceArea: '', caseType: 'other', description: '' });
+const selectStyle = { fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' };
+const labelStyle = { fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' };
+
+function CaseModal({ caseData, onClose, onSave }) {
+  const isEdit = Boolean(caseData?._id);
+  const [form, setForm] = useState({
+    title: caseData?.title || '',
+    client: caseData?.client?._id || caseData?.client || '',
+    leadAttorney: caseData?.leadAttorney?._id || caseData?.leadAttorney || '',
+    practiceArea: caseData?.practiceArea || '',
+    caseType: caseData?.caseType || 'other',
+    status: caseData?.status || 'open',
+    priority: caseData?.priority || 'medium',
+    description: caseData?.description || '',
+  });
   const [clients, setClients] = useState([]);
   const [attorneys, setAttorneys] = useState([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get('/clients', { params: { limit: 100 } }).then(r => setClients(r.data.clients));
+    api.get('/clients', { params: { limit: 200 } }).then(r => setClients(r.data.clients));
     api.get('/attorneys').then(r => setAttorneys(r.data));
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    try { await api.post('/cases', form); onSave(); }
-    finally { setSaving(false); }
+    try {
+      if (isEdit) {
+        await api.put(`/cases/${caseData._id}`, form);
+      } else {
+        await api.post('/cases', form);
+      }
+      onSave();
+    } finally { setSaving(false); }
   };
-
-  const selectStyle = { fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(13,19,32,0.55)', backdropFilter: 'blur(4px)' }}>
@@ -39,12 +56,14 @@ function CaseModal({ onClose, onSave }) {
         className="w-full max-w-lg rounded-xl overflow-hidden"
         style={{ background: 'var(--surface)', boxShadow: '0 24px 64px rgba(27,58,107,0.2)', border: '1px solid rgba(201,168,76,0.2)' }}>
         <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid rgba(201,168,76,0.12)' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--text)' }}>Open New Matter</h2>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--text)' }}>
+            {isEdit ? 'Edit Matter' : 'Open New Matter'}
+          </h2>
           <button onClick={onClose}><X size={17} className="text-[#6B6B7B]" /></button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Matter Title</label>
+            <label style={labelStyle}>Matter Title</label>
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required
               style={{ ...selectStyle, fontStyle: 'italic' }}
               className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none" />
@@ -55,7 +74,7 @@ function CaseModal({ onClose, onSave }) {
             { label: 'Case Type', key: 'caseType', options: ['litigation','corporate','family','criminal','real-estate','immigration','other'].map(v => ({ v, l: v.charAt(0).toUpperCase() + v.slice(1) })) },
           ].map(({ label, key, options }) => (
             <div key={key}>
-              <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>
+              <label style={labelStyle}>{label}</label>
               <select value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} required
                 style={selectStyle} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none">
                 <option value="">Select…</option>
@@ -64,10 +83,28 @@ function CaseModal({ onClose, onSave }) {
             </div>
           ))}
           <div>
-            <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Practice Area</label>
+            <label style={labelStyle}>Practice Area</label>
             <input value={form.practiceArea} onChange={(e) => setForm({ ...form, practiceArea: e.target.value })} required
               style={selectStyle} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none" />
           </div>
+          {isEdit && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label style={labelStyle}>Status</label>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
+                  style={selectStyle} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none">
+                  {Object.entries(STATUS_COLORS).map(([v, { label }]) => <option key={v} value={v}>{label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Priority</label>
+                <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                  style={selectStyle} className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none">
+                  {['low','medium','high','urgent'].map(v => <option key={v} value={v}>{v.charAt(0).toUpperCase() + v.slice(1)}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
           <div className="flex gap-3 justify-end pt-2">
             <button type="button" onClick={onClose}
               className="px-5 py-2.5 rounded-lg text-sm text-[#6B6B7B]"
@@ -75,11 +112,48 @@ function CaseModal({ onClose, onSave }) {
             <motion.button type="submit" disabled={saving} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               className="px-5 py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-60"
               style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.2)' }}>
-              {saving ? 'Opening…' : 'Open Matter'}
+              {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Open Matter'}
             </motion.button>
           </div>
         </form>
       </motion.div>
+    </div>
+  );
+}
+
+function RowMenu({ caseData, onEdit, onClose: onCloseCase }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button onClick={() => setOpen(o => !o)} className="p-1.5 rounded-lg text-[#6B6B7B] hover:bg-[#F5F2ED]">
+        <MoreHorizontal size={15} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 4 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="absolute right-0 z-20 mt-1 w-40 rounded-xl overflow-hidden"
+              style={{ background: 'var(--surface)', boxShadow: '0 8px 24px rgba(27,58,107,0.12)', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <button onClick={() => { setOpen(false); onEdit(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-[#F5F2ED] transition-colors"
+                style={{ fontFamily: 'var(--font-body)', color: 'var(--text)' }}>
+                <Pencil size={13} /> Edit Matter
+              </button>
+              {caseData.status !== 'closed' && (
+                <button onClick={() => { setOpen(false); onCloseCase(); }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-red-50 transition-colors text-red-500"
+                  style={{ fontFamily: 'var(--font-body)' }}>
+                  <XCircle size={13} /> Close Matter
+                </button>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -90,7 +164,7 @@ export default function Cases() {
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(null); // null | 'new' | case object
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -102,6 +176,11 @@ export default function Cases() {
   }, [statusFilter, page]);
 
   useEffect(() => { load(); }, [load]);
+
+  const handleClose = async (id) => {
+    await api.put(`/cases/${id}`, { status: 'closed' });
+    load();
+  };
 
   const totalPages = Math.ceil(total / 15);
 
@@ -120,7 +199,7 @@ export default function Cases() {
             {Object.entries(STATUS_COLORS).map(([v, { label }]) => <option key={v} value={v}>{label}</option>)}
           </select>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            onClick={() => setModal(true)}
+            onClick={() => setModal('new')}
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-semibold"
             style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.25)', boxShadow: '0 4px 14px rgba(27,58,107,0.2)' }}>
             <Plus size={15} /> Open Matter
@@ -136,7 +215,8 @@ export default function Cases() {
           <div className="col-span-2">Client</div>
           <div className="col-span-2">Attorney</div>
           <div className="col-span-1">Priority</div>
-          <div className="col-span-2">Status</div>
+          <div className="col-span-1">Status</div>
+          <div className="col-span-1" />
         </div>
 
         {loading ? (
@@ -153,7 +233,7 @@ export default function Cases() {
               return (
                 <motion.div key={c._id}
                   variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                  className="grid grid-cols-12 px-6 py-4 items-center hover:bg-[#F5F2ED] transition-colors cursor-pointer"
+                  className="grid grid-cols-12 px-6 py-4 items-center hover:bg-[#F5F2ED] transition-colors"
                   style={{ borderBottom: '1px solid rgba(201,168,76,0.06)' }}>
                   <div className="col-span-1" style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: '#C9A84C', fontWeight: 600 }}>{c.caseNumber}</div>
                   <div className="col-span-4">
@@ -170,11 +250,18 @@ export default function Cases() {
                     <span className="w-2 h-2 rounded-full" style={{ background: PRIORITY_COLOR[c.priority] || '#6B6B7B' }} />
                     <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.73rem', color: 'var(--muted)', textTransform: 'capitalize' }}>{c.priority}</span>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     <span className="px-2.5 py-1 rounded-md text-xs"
                       style={{ background: sc.bg, color: sc.color, fontFamily: 'var(--font-body)', border: `1px solid ${sc.color}20` }}>
                       {sc.label}
                     </span>
+                  </div>
+                  <div className="col-span-1 flex justify-end">
+                    <RowMenu
+                      caseData={c}
+                      onEdit={() => setModal(c)}
+                      onClose={() => handleClose(c._id)}
+                    />
                   </div>
                 </motion.div>
               );
@@ -196,7 +283,13 @@ export default function Cases() {
       )}
 
       <AnimatePresence>
-        {modal && <CaseModal onClose={() => setModal(false)} onSave={() => { setModal(false); load(); }} />}
+        {modal && (
+          <CaseModal
+            caseData={modal === 'new' ? null : modal}
+            onClose={() => setModal(null)}
+            onSave={() => { setModal(null); load(); }}
+          />
+        )}
       </AnimatePresence>
     </div>
   );

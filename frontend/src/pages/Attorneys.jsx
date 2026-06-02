@@ -1,7 +1,39 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scale, Plus, X, MoreHorizontal, Clock, DollarSign } from 'lucide-react';
+import { Scale, Plus, X, MoreHorizontal, Pencil, Trash2, DollarSign } from 'lucide-react';
 import api from '../lib/api.js';
+
+function CardMenu({ onEdit, onDelete }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button onClick={() => setOpen(o => !o)} className="p-1.5 rounded-md hover:bg-[#F5F2ED] text-[#6B6B7B]">
+        <MoreHorizontal size={15} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+              className="absolute right-0 z-20 mt-1 w-40 rounded-xl overflow-hidden"
+              style={{ background: 'var(--surface)', boxShadow: '0 8px 24px rgba(27,58,107,0.12)', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <button onClick={() => { setOpen(false); onEdit(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-[#F5F2ED] transition-colors"
+                style={{ fontFamily: 'var(--font-body)', color: 'var(--text)' }}>
+                <Pencil size={13} /> Edit
+              </button>
+              <button onClick={() => { setOpen(false); onDelete(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-red-50 transition-colors text-red-500"
+                style={{ fontFamily: 'var(--font-body)' }}>
+                <Trash2 size={13} /> Remove
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function AttorneyModal({ attorney, onClose, onSave }) {
   const isEdit = Boolean(attorney?._id);
@@ -75,6 +107,11 @@ export default function Attorneys() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
 
+  const handleDelete = async (id) => {
+    await api.delete(`/attorneys/${id}`);
+    load();
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
     try { const { data } = await api.get('/attorneys'); setAttorneys(data); }
@@ -122,9 +159,7 @@ export default function Attorneys() {
                     </p>
                   </div>
                 </div>
-                <button onClick={() => setModal(att)} className="p-1.5 rounded-md hover:bg-[#F5F2ED] text-[#6B6B7B]">
-                  <MoreHorizontal size={15} />
-                </button>
+                <CardMenu onEdit={() => setModal(att)} onDelete={() => handleDelete(att._id)} />
               </div>
               <div className="space-y-2 mb-4">
                 <div className="flex items-center justify-between">

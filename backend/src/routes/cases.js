@@ -1,54 +1,75 @@
 import { Router } from 'express';
-import Case from '../models/Case.js';
+import prisma, { withId } from '../lib/prisma.js';
 import { protect } from '../middleware/auth.js';
 
 const router = Router();
 router.use(protect);
 
+const caseInclude = {
+  client: { select: { id: true, firstName: true, lastName: true, company: true } },
+  leadAttorney: { include: { user: { select: { id: true, name: true } } } },
+};
+
 router.get('/', async (req, res, next) => {
   try {
     const { status, attorney, client, practiceArea, page = 1, limit = 20 } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-    if (attorney) filter.$or = [{ leadAttorney: attorney }, { attorneys: attorney }];
-    if (client) filter.client = client;
-    if (practiceArea) filter.practiceArea = new RegExp(practiceArea, 'i');
+    const where = {};
+    if (status) where.status = status;
+    if (attorney) where.leadAttorneyId = attorney;
+    if (client) where.clientId = client;
+    if (practiceArea) where.practiceArea = { contains: practiceArea, mode: 'insensitive' };
+    const skip = (Number(page) - 1) * Number(limit);
     const [cases, total] = await Promise.all([
-      Case.find(filter)
-        .populate('client', 'firstName lastName company')
-        .populate({ path: 'leadAttorney', populate: { path: 'user', select: 'name' } })
-        .skip((page - 1) * limit).limit(Number(limit)).sort('-createdAt'),
-      Case.countDocuments(filter),
+      prisma.case.findMany({ where, skip, take: Number(limit), include: caseInclude, orderBy: { createdAt: 'desc' } }),
+      prisma.case.count({ where }),
     ]);
-    res.json({ cases, total });
+    res.json({ cases: withId(cases), total });
   } catch (err) { next(err); }
 });
 
 router.post('/', async (req, res, next) => {
   try {
-    const count = await Case.countDocuments();
-    req.body.caseNumber = `CF-${new Date().getFullYear()}-${String(count + 1).padStart(4, '0')}`;
-    const newCase = await Case.create(req.body);
-    res.status(201).json(newCase);
+    const { title, client, leadAttorney, practiceArea, caseType, description, notes } = req.body;
+    const year = new Date().getFullYear();
+    const count = await prisma.case.count({ where: { caseNumber: { startsWith: `CF-${year}-` } } });
+    const caseNumber = `CF-${year}-${String(count + 1).padStart(4, '0')}`;
+    const newCase = await prisma.case.create({
+      data: { caseNumber, title, clientId: client, leadAttorneyId: leadAttorney, practiceArea, caseType: caseType || 'other', description, notes },
+      include: caseInclude,
+    });
+    res.status(201).json(withId(newCase));
   } catch (err) { next(err); }
 });
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const c = await Case.findById(req.params.id)
-      .populate('client')
-      .populate({ path: 'leadAttorney', populate: { path: 'user', select: 'name' } })
-      .populate({ path: 'attorneys', populate: { path: 'user', select: 'name' } });
+    const c = await prisma.case.findUnique({ where: { id: req.params.id }, include: caseInclude });
     if (!c) return res.status(404).json({ message: 'Case not found' });
-    res.json(c);
+    res.json(withId(c));
   } catch (err) { next(err); }
 });
 
 router.put('/:id', async (req, res, next) => {
   try {
-    const c = await Case.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!c) return res.status(404).json({ message: 'Case not found' });
-    res.json(c);
+    const { title, leadAttorney, practiceArea, caseType, status, priority, closedAt, courtDate, description, notes } = req.body;
+    const c = await prisma.case.update({
+      where: { id: req.params.id },
+      data: {
+        ...(title && { title }),
+        ...(leadAttorney && { leadAttorneyId: leadAttorney }),
+        ...(practiceArea && { practiceArea }),
+        ...(caseType && { caseType }),
+        ...(status && { status }),
+        ...(priority && { priority }),
+        ...(closedAt !== undefined && { closedAt: closedAt ? new Date(closedAt) : null }),
+        ...(courtDate !== undefined && { courtDate: courtDate ? new Date(courtDate) : null }),
+        ...(description !== undefined && { description }),
+        ...(notes !== undefined && { notes }),
+        ...(status === 'closed' && { closedAt: new Date() }),
+      },
+      include: caseInclude,
+    });
+    res.json(withId(c));
   } catch (err) { next(err); }
 });
 
