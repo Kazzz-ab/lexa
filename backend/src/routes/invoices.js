@@ -14,13 +14,14 @@ const invoiceInclude = {
 router.get('/', async (req, res, next) => {
   try {
     const { status, client, attorney, page = 1, limit = 20 } = req.query;
+    const safeLimit = Math.min(Number(limit), 200);
     const where = {};
     if (status) where.status = status;
     if (client) where.clientId = client;
     if (attorney) where.attorneyId = attorney;
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = Math.max(0, (Number(page) - 1) * safeLimit);
     const [invoices, total] = await Promise.all([
-      prisma.invoice.findMany({ where, skip, take: Number(limit), include: invoiceInclude, orderBy: { createdAt: 'desc' } }),
+      prisma.invoice.findMany({ where, skip, take: safeLimit, include: invoiceInclude, orderBy: { createdAt: 'desc' } }),
       prisma.invoice.count({ where }),
     ]);
     res.json({ invoices: withId(invoices), total });

@@ -8,6 +8,7 @@ router.use(protect);
 router.get('/', async (req, res, next) => {
   try {
     const { search, page = 1, limit = 20 } = req.query;
+    const safeLimit = Math.min(Number(limit), 200);
     const where = { isActive: true };
     if (search) {
       where.OR = [
@@ -16,9 +17,9 @@ router.get('/', async (req, res, next) => {
         { company: { contains: search, mode: 'insensitive' } },
       ];
     }
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = Math.max(0, (Number(page) - 1) * safeLimit);
     const [clients, total] = await Promise.all([
-      prisma.client.findMany({ where, skip, take: Number(limit), orderBy: { createdAt: 'desc' } }),
+      prisma.client.findMany({ where, skip, take: safeLimit, orderBy: { createdAt: 'desc' } }),
       prisma.client.count({ where }),
     ]);
     res.json({ clients: withId(clients), total, page: Number(page) });

@@ -13,14 +13,15 @@ const caseInclude = {
 router.get('/', async (req, res, next) => {
   try {
     const { status, attorney, client, practiceArea, page = 1, limit = 20 } = req.query;
+    const safeLimit = Math.min(Number(limit), 200);
     const where = {};
     if (status) where.status = status;
     if (attorney) where.leadAttorneyId = attorney;
     if (client) where.clientId = client;
     if (practiceArea) where.practiceArea = { contains: practiceArea, mode: 'insensitive' };
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = Math.max(0, (Number(page) - 1) * safeLimit);
     const [cases, total] = await Promise.all([
-      prisma.case.findMany({ where, skip, take: Number(limit), include: caseInclude, orderBy: { createdAt: 'desc' } }),
+      prisma.case.findMany({ where, skip, take: safeLimit, include: caseInclude, orderBy: { createdAt: 'desc' } }),
       prisma.case.count({ where }),
     ]);
     res.json({ cases: withId(cases), total });
