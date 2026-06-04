@@ -130,12 +130,7 @@ cd frontend && npm run dev
 
 Open [http://localhost:5174](http://localhost:5174)
 
-Default seed credentials:
-| Email | Password | Role |
-|---|---|---|
-| `admin@counselflow.io` | `Admin1234!` | Admin |
-| `counsel@counselflow.io` | `Attorney123!` | Attorney |
-| `paralegal@counselflow.io` | `Paralegal123!` | Paralegal |
+After seeding, log in with the credentials you defined in `backend/src/scripts/seed.js`. Change all passwords immediately after first login.
 
 ---
 
