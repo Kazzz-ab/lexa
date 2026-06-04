@@ -16,6 +16,7 @@ import analyticsRoutes from './routes/analytics.js';
 import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { auditLog } from './middleware/audit.js';
+import { speedLimiter, writeLimiter, sanitizeInput, antiPhishingHeaders, honeypotCheck, duplicateSubmissionBlock } from './middleware/security.js';
 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET env var is required');
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL env var is required');
@@ -34,6 +35,9 @@ app.use(morgan(isProd ? 'combined' : 'dev'));
 app.use(express.json({ limit: '50kb' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
 app.use(auditLog);
+app.use(speedLimiter);
+app.use(sanitizeInput);
+app.use(antiPhishingHeaders);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
