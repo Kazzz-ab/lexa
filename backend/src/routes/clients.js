@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import prisma, { withId } from '../lib/prisma.js';
-import { protect } from '../middleware/auth.js';
+import { protect, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 router.use(protect);
@@ -9,6 +9,7 @@ router.get('/', async (req, res, next) => {
   try {
     const { search, page = 1, limit = 20 } = req.query;
     const safeLimit = Math.min(Number(limit), 200);
+    if (search && search.length > 100) return res.status(400).json({ message: 'Search query too long' });
     const where = { isActive: true };
     if (search) {
       where.OR = [
@@ -26,8 +27,9 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', requireRole('admin', 'paralegal', 'attorney'), async (req, res, next) => {
   try {
+    if (!req.body.firstName || !req.body.lastName) return res.status(400).json({ message: 'First and last name are required' });
     const { firstName, lastName, email, phone, company, clientType, referredBy, notes } = req.body;
     const client = await prisma.client.create({ data: { firstName, lastName, email, phone, company, clientType: clientType || 'individual', referredBy, notes } });
     res.status(201).json(withId(client));
@@ -42,7 +44,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireRole('admin', 'paralegal', 'attorney'), async (req, res, next) => {
   try {
     const { firstName, lastName, email, phone, company, clientType, referredBy, notes } = req.body;
     const client = await prisma.client.update({ where: { id: req.params.id }, data: { firstName, lastName, email, phone, company, clientType, referredBy, notes } });
@@ -50,7 +52,7 @@ router.put('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireRole('admin'), async (req, res, next) => {
   try {
     await prisma.client.update({ where: { id: req.params.id }, data: { isActive: false } });
     res.status(204).end();

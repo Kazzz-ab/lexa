@@ -54,6 +54,19 @@ router.post('/', requireRole('admin', 'paralegal'), async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+router.patch('/bulk-status', requireRole('admin', 'paralegal'), async (req, res, next) => {
+  try {
+    const { ids, status } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) return res.status(400).json({ message: 'ids must be a non-empty array' });
+    const VALID = ['draft', 'sent', 'paid', 'overdue', 'cancelled'];
+    if (!VALID.includes(status)) return res.status(400).json({ message: 'Invalid status' });
+    const data = { status };
+    if (status === 'paid') data.paidAt = new Date();
+    await prisma.invoice.updateMany({ where: { id: { in: ids } }, data });
+    res.json({ updated: ids.length });
+  } catch (err) { next(err); }
+});
+
 router.put('/:id', requireRole('admin', 'paralegal'), async (req, res, next) => {
   try {
     const { status, dueDate, notes, lineItems, subtotal, tax, total } = req.body;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, ChevronLeft, ChevronRight, DollarSign, Plus, X, Trash2, ChevronDown } from 'lucide-react';
+import { FileText, ChevronLeft, ChevronRight, DollarSign, Plus, X, Trash2, ChevronDown, Download, CheckSquare, Square, SquareCheck } from 'lucide-react';
+import { exportInvoicePDF } from '../lib/exportPDF.js';
 import { format } from 'date-fns';
 import api from '../lib/api.js';
 
@@ -249,9 +250,13 @@ export default function Invoices() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
+  const [selected, setSelected] = useState(new Set());
+  const [bulkStatus, setBulkStatus] = useState('');
+  const [bulking, setBulking] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setSelected(new Set());
     try {
       const { data } = await api.get('/invoices', { params: { status: statusFilter || undefined, page, limit: 15 } });
       setInvoices(data.invoices);
@@ -261,8 +266,37 @@ export default function Invoices() {
 
   useEffect(() => { load(); }, [load]);
 
+  const toggleSelect = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.size === invoices.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(invoices.map(i => i._id)));
+    }
+  };
+
+  const handleBulkUpdate = async () => {
+    if (!bulkStatus || selected.size === 0) return;
+    setBulking(true);
+    try {
+      await api.patch('/invoices/bulk-status', { ids: Array.from(selected), status: bulkStatus });
+      setSelected(new Set());
+      setBulkStatus('');
+      load();
+    } finally { setBulking(false); }
+  };
+
   const totalPages = Math.ceil(total / 15);
   const pageTotal = invoices.reduce((s, inv) => s + (inv.total || 0), 0);
+  const allSelected = invoices.length > 0 && selected.size === invoices.length;
+  const someSelected = selected.size > 0 && !allSelected;
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
@@ -289,15 +323,53 @@ export default function Invoices() {
         </div>
       </div>
 
+      {/* Bulk action bar */}
+      <AnimatePresence>
+        {selected.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            className="flex items-center gap-3 mb-4 px-4 py-3 rounded-xl"
+            style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.22)' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600, color: '#C9A84C' }}>
+              {selected.size} selected
+            </span>
+            <span style={{ color: 'rgba(201,168,76,0.35)' }}>|</span>
+            <select value={bulkStatus} onChange={(e) => setBulkStatus(e.target.value)}
+              style={{ fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.2)' }}
+              className="px-3 py-1.5 rounded-lg text-sm focus:outline-none">
+              <option value="">Set status…</option>
+              {Object.entries(STATUS).map(([v, { label }]) => <option key={v} value={v}>{label}</option>)}
+            </select>
+            <motion.button
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              onClick={handleBulkUpdate}
+              disabled={!bulkStatus || bulking}
+              className="px-4 py-1.5 rounded-lg text-white text-sm font-semibold disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #1B3A6B, #C9A84C)', fontFamily: 'var(--font-body)' }}>
+              {bulking ? 'Updating…' : 'Apply'}
+            </motion.button>
+            <button onClick={() => setSelected(new Set())} className="ml-auto text-[#6B6B7B] hover:text-[#1B3A6B]">
+              <X size={16} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
         <div className="grid grid-cols-12 px-6 py-3 text-xs font-semibold text-[#6B6B7B] uppercase tracking-widest"
           style={{ fontFamily: 'var(--font-body)', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+          <div className="col-span-1 flex items-center">
+            <button onClick={toggleAll} className="text-[#6B6B7B] hover:text-[#C9A84C] transition-colors">
+              {allSelected ? <CheckSquare size={14} style={{ color: '#C9A84C' }} /> : someSelected ? <SquareCheck size={14} style={{ color: '#C9A84C' }} /> : <Square size={14} />}
+            </button>
+          </div>
           <div className="col-span-2">Invoice</div>
-          <div className="col-span-3">Client</div>
+          <div className="col-span-2">Client</div>
           <div className="col-span-2">Matter</div>
           <div className="col-span-2">Due Date</div>
           <div className="col-span-1">Amount</div>
-          <div className="col-span-2">Status</div>
+          <div className="col-span-1">Status</div>
+          <div className="col-span-1" />
         </div>
 
         {loading ? (
@@ -312,10 +384,15 @@ export default function Invoices() {
             {invoices.map((inv) => (
               <motion.div key={inv._id}
                 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                className="grid grid-cols-12 px-6 py-4 items-center hover:bg-[#F5F2ED] transition-colors"
+                className={`grid grid-cols-12 px-6 py-4 items-center transition-colors ${selected.has(inv._id) ? 'bg-[#F5F0E8]' : 'hover:bg-[#F5F2ED]'}`}
                 style={{ borderBottom: '1px solid rgba(201,168,76,0.06)' }}>
+                <div className="col-span-1">
+                  <button onClick={() => toggleSelect(inv._id)} className="text-[#6B6B7B] hover:text-[#C9A84C] transition-colors">
+                    {selected.has(inv._id) ? <CheckSquare size={14} style={{ color: '#C9A84C' }} /> : <Square size={14} />}
+                  </button>
+                </div>
                 <div className="col-span-2" style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 600, color: '#C9A84C' }}>{inv.invoiceNumber}</div>
-                <div className="col-span-3">
+                <div className="col-span-2">
                   <p style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: 'var(--text)' }}>
                     {inv.client?.firstName} {inv.client?.lastName}
                   </p>
@@ -324,7 +401,7 @@ export default function Invoices() {
                   )}
                 </div>
                 <div className="col-span-2" style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--muted)', fontStyle: 'italic' }}>
-                  {inv.case?.title ? inv.case.title.substring(0, 24) + (inv.case.title.length > 24 ? '…' : '') : '—'}
+                  {inv.case?.title ? inv.case.title.substring(0, 20) + (inv.case.title.length > 20 ? '…' : '') : '—'}
                 </div>
                 <div className="col-span-2" style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: inv.status === 'overdue' ? '#B45309' : 'var(--muted)' }}>
                   {inv.dueDate ? format(new Date(inv.dueDate), 'dd MMM yyyy') : '—'}
@@ -335,8 +412,14 @@ export default function Invoices() {
                     {inv.total?.toLocaleString()}
                   </span>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                   <StatusDropdown invoiceId={inv._id} current={inv.status} onUpdate={load} />
+                </div>
+                <div className="col-span-1 flex justify-end">
+                  <button onClick={() => exportInvoicePDF(inv)} title="Download PDF"
+                    className="p-1.5 rounded-md hover:bg-[#F5F2ED] text-[#6B6B7B] hover:text-[#1B3A6B] transition-colors">
+                    <Download size={13} />
+                  </button>
                 </div>
               </motion.div>
             ))}

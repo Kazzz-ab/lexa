@@ -12,10 +12,12 @@ model User {
   name      String
   email     String    @unique
   password  String
-  role      String    @default("paralegal")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  attorney  Attorney?
+  role              String    @default("paralegal")
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  attorney          Attorney?
 }
 
 model Client {
@@ -93,4 +95,16 @@ model Invoice {
   notes         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  userEmail  String?
+  action     String
+  resource   String
+  resourceId String?
+  details    Json?
+  ip         String?
+  createdAt  DateTime @default(now())
 }

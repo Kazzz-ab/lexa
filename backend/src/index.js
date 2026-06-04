@@ -11,7 +11,11 @@ import attorneyRoutes from './routes/attorneys.js';
 import caseRoutes from './routes/cases.js';
 import invoiceRoutes from './routes/invoices.js';
 import statsRoutes from './routes/stats.js';
+import notificationRoutes from './routes/notifications.js';
+import analyticsRoutes from './routes/analytics.js';
+import adminRoutes from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { auditLog } from './middleware/audit.js';
 
 if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET env var is required');
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL env var is required');
@@ -29,6 +33,7 @@ app.use(cors({
 app.use(morgan(isProd ? 'combined' : 'dev'));
 app.use(express.json({ limit: '50kb' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false }));
+app.use(auditLog);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -46,6 +51,9 @@ app.use('/api/attorneys', attorneyRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);
 
