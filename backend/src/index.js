@@ -47,7 +47,7 @@ const authLimiter = rateLimit({
   message: { message: 'Too many attempts, please try again later' },
 });
 
-app.get('/health', (_req, res) => res.json({ status: 'ok', app: 'CounselFlow' }));
+app.get('/health', (_req, res) => res.json({ status: 'ok', app: 'Lexa' }));
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/clients', clientRoutes);
@@ -61,7 +61,7 @@ app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`CounselFlow API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Lexa API running on port ${PORT}`));
 
 process.on('SIGINT', async () => { await prisma.$disconnect(); process.exit(0); });
 process.on('SIGTERM', async () => { await prisma.$disconnect(); process.exit(0); });

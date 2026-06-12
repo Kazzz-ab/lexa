@@ -32,7 +32,7 @@ export default function Profile() {
     } finally { setSaving(false); }
   };
 
-  const inputStyle = { fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' };
+  const inputStyle = { fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.25)' };
 
   return (
     <div className="max-w-2xl mx-auto px-6 lg:px-8 py-10">
@@ -40,28 +40,28 @@ export default function Profile() {
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>
           My Profile
         </h1>
-        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', marginTop: '0.25rem', fontSize: '0.85rem', fontStyle: 'italic' }}>
+        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', marginTop: '0.25rem', fontSize: '0.85rem' }}>
           Update your display name and email address.
         </p>
       </motion.div>
 
       {loading ? (
-        <div className="py-16 text-center text-[#6B6B7B]" style={{ fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>Loading…</div>
+        <div className="py-16 text-center text-[#6B6B7B]" style={{ fontFamily: 'var(--font-body)' }}>Loading…</div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="rounded-xl p-6"
-          style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
+          style={{ background: 'var(--surface)', border: '1px solid rgba(139,92,246,0.15)', boxShadow: '0 2px 12px rgba(76,29,149,0.07)' }}>
 
-          <div className="flex items-center gap-4 mb-6 pb-6" style={{ borderBottom: '1px solid rgba(201,168,76,0.12)' }}>
-            <div className="w-16 h-16 rounded-lg flex items-center justify-center text-[#C9A84C] text-2xl font-bold flex-shrink-0 border border-[#C9A84C]/25"
-              style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)' }}>
+          <div className="flex items-center gap-4 mb-6 pb-6" style={{ borderBottom: '1px solid rgba(139,92,246,0.12)' }}>
+            <div className="w-16 h-16 rounded-lg flex items-center justify-center text-[#8B5CF6] text-2xl font-bold flex-shrink-0 border border-[#8B5CF6]/25"
+              style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)' }}>
               {form.name?.charAt(0) || 'U'}
             </div>
             <div>
               <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text)' }}>{form.name}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <Shield size={13} style={{ color: '#C9A84C' }} />
-                <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: '#C9A84C', textTransform: 'capitalize', fontStyle: 'italic' }}>
+                <Shield size={13} style={{ color: '#8B5CF6' }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: '#8B5CF6', textTransform: 'capitalize' }}>
                   {authUser?.role || 'staff'}
                 </span>
               </div>
@@ -91,12 +91,12 @@ export default function Profile() {
             <div className="flex items-center gap-3 pt-2">
               <motion.button type="submit" disabled={saving} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.2)' }}>
+                style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)', fontFamily: 'var(--font-body)', border: '1px solid rgba(139,92,246,0.2)' }}>
                 <Save size={14} /> {saving ? 'Saving…' : 'Save Changes'}
               </motion.button>
               {saved && (
                 <motion.span initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-1.5 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#C9A84C' }}>
+                  className="flex items-center gap-1.5 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#8B5CF6' }}>
                   <CheckCircle2 size={14} /> Saved
                 </motion.span>
               )}

@@ -32,7 +32,7 @@ router.post('/', requireRole('admin', 'paralegal'), async (req, res, next) => {
   try {
     const { client, case: caseId, attorney, billingType, lineItems, subtotal, tax, total, status, dueDate, notes } = req.body;
     const count = await prisma.invoice.count();
-    const invoiceNumber = `INV-CL-${String(count + 1).padStart(5, '0')}`;
+    const invoiceNumber = `INV-LX-${String(count + 1).padStart(5, '0')}`;
     const invoice = await prisma.invoice.create({
       data: {
         clientId: client,

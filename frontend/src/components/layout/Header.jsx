@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scale, ChevronDown, LogOut, Menu, Moon, Settings, Sun, User, X, ShieldCheck, ClipboardList } from 'lucide-react';
+import { Landmark, ChevronDown, LogOut, Menu, Moon, Settings, Sun, User, X, ShieldCheck, ClipboardList } from 'lucide-react';
 import NotificationBell from './NotificationBell.jsx';
 import { useDarkMode } from '../../hooks/useDarkMode.js';
 import { useAuth } from '../../hooks/useAuth.js';
@@ -37,7 +37,7 @@ export default function Header() {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 22 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'glass shadow-xl shadow-[#1B3A6B]/10 border-b border-[#C9A84C]/20' : 'bg-transparent'
+        scrolled ? 'glass shadow-xl shadow-[#4C1D95]/10 border-b border-[#8B5CF6]/20' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -48,20 +48,20 @@ export default function Header() {
             <motion.div
               whileHover={{ scale: 1.08 }}
               transition={{ type: 'spring', stiffness: 250 }}
-              className="w-10 h-10 rounded-lg flex items-center justify-center border border-[#C9A84C]/30"
-              style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)' }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center border border-[#8B5CF6]/30"
+              style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)' }}
             >
-              <Scale size={18} className="text-[#C9A84C]" />
+              <Landmark size={18} className="text-[#C4B5FD]" />
             </motion.div>
             <div>
               <span
                 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.2rem', letterSpacing: '-0.01em' }}
                 className="gradient-text block leading-none"
               >
-                CounselFlow
+                Lexa
               </span>
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.6rem', color: 'var(--muted)', letterSpacing: '0.12em' }}>
-                LAW FIRM MANAGEMENT
+                PRACTICE INTELLIGENCE
               </span>
             </div>
           </Link>
@@ -75,8 +75,8 @@ export default function Header() {
                 className={({ isActive }) =>
                   `px-4 py-2 text-sm font-medium transition-all duration-200 relative ${
                     isActive
-                      ? 'text-[#1B3A6B]'
-                      : 'text-[#1A1A2E]/60 hover:text-[#1B3A6B]'
+                      ? 'text-[#4C1D95]'
+                      : 'text-[#1A1A2E]/60 hover:text-[#4C1D95]'
                   }`
                 }
                 style={{ fontFamily: 'var(--font-body)' }}
@@ -88,7 +88,7 @@ export default function Header() {
                       <motion.span
                         layoutId="nav-underline"
                         className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full"
-                        style={{ background: 'linear-gradient(90deg, #1B3A6B, #C9A84C)' }}
+                        style={{ background: 'linear-gradient(90deg, #4C1D95, #8B5CF6)' }}
                       />
                     )}
                   </>
@@ -101,8 +101,8 @@ export default function Header() {
           <div className="hidden lg:flex items-center gap-3">
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setDark(d => !d)}
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-[#6B6B7B] hover:bg-[#1B3A6B]/6 transition-colors border border-transparent hover:border-[#C9A84C]/20">
-              {dark ? <Sun size={16} className="text-[#C9A84C]" /> : <Moon size={16} />}
+              className="w-10 h-10 rounded-lg flex items-center justify-center text-[#6B6B7B] hover:bg-[#4C1D95]/6 transition-colors border border-transparent hover:border-[#8B5CF6]/20">
+              {dark ? <Sun size={16} className="text-[#8B5CF6]" /> : <Moon size={16} />}
             </motion.button>
             <NotificationBell />
 
@@ -110,10 +110,10 @@ export default function Header() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-lg hover:bg-[#1B3A6B]/5 transition-colors border border-transparent hover:border-[#C9A84C]/20"
+                className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-lg hover:bg-[#4C1D95]/5 transition-colors border border-transparent hover:border-[#8B5CF6]/20"
               >
-                <div className="w-8 h-8 rounded-md flex items-center justify-center text-[#C9A84C] text-sm font-bold border border-[#C9A84C]/30"
-                  style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)' }}>
+                <div className="w-8 h-8 rounded-md flex items-center justify-center text-[#8B5CF6] text-sm font-bold border border-[#8B5CF6]/30"
+                  style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)' }}>
                   {user?.name?.charAt(0) || 'U'}
                 </div>
                 <span className="text-sm font-medium text-[#1A1A2E]" style={{ fontFamily: 'var(--font-body)' }}>
@@ -129,33 +129,33 @@ export default function Header() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute right-0 top-full mt-2 w-52 glass rounded-xl shadow-xl overflow-hidden border border-[#C9A84C]/15"
+                    className="absolute right-0 top-full mt-2 w-52 glass rounded-xl shadow-xl overflow-hidden border border-[#8B5CF6]/15"
                   >
                     <div className="p-1.5">
                       <button onClick={() => { setProfileOpen(false); navigate('/profile'); }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#4C1D95]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
                         <User size={14} /> My Profile
                       </button>
                       <button onClick={() => { setProfileOpen(false); navigate('/settings'); }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#1B3A6B]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#1A1A2E]/75 hover:bg-[#4C1D95]/6 transition-colors" style={{ fontFamily: 'var(--font-body)' }}>
                         <Settings size={14} /> Settings
                       </button>
                       {user?.role === 'admin' && (
                         <>
-                          <div className="my-1 border-t border-[#C9A84C]/15" />
+                          <div className="my-1 border-t border-[#8B5CF6]/15" />
                           <button onClick={() => { setProfileOpen(false); navigate('/admin/users'); }}
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-[#C9A84C]/8 transition-colors"
-                            style={{ fontFamily: 'var(--font-body)', color: '#C9A84C' }}>
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-[#8B5CF6]/8 transition-colors"
+                            style={{ fontFamily: 'var(--font-body)', color: '#8B5CF6' }}>
                             <ShieldCheck size={14} /> User Management
                           </button>
                           <button onClick={() => { setProfileOpen(false); navigate('/admin/audit'); }}
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-[#C9A84C]/8 transition-colors"
-                            style={{ fontFamily: 'var(--font-body)', color: '#C9A84C' }}>
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-[#8B5CF6]/8 transition-colors"
+                            style={{ fontFamily: 'var(--font-body)', color: '#8B5CF6' }}>
                             <ClipboardList size={14} /> Audit Log
                           </button>
                         </>
                       )}
-                      <div className="my-1 border-t border-[#C9A84C]/15" />
+                      <div className="my-1 border-t border-[#8B5CF6]/15" />
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -170,7 +170,7 @@ export default function Header() {
             </div>
           </div>
 
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 rounded-lg hover:bg-[#1B3A6B]/6">
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 rounded-lg hover:bg-[#4C1D95]/6">
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
@@ -182,7 +182,7 @@ export default function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass border-t border-[#C9A84C]/15"
+            className="lg:hidden glass border-t border-[#8B5CF6]/15"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
@@ -191,7 +191,7 @@ export default function Header() {
                   to={link.to}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `block px-4 py-3 rounded-lg text-sm font-medium ${isActive ? 'bg-[#1B3A6B]/8 text-[#1B3A6B]' : 'text-[#1A1A2E]/75'}`
+                    `block px-4 py-3 rounded-lg text-sm font-medium ${isActive ? 'bg-[#4C1D95]/8 text-[#4C1D95]' : 'text-[#1A1A2E]/75'}`
                   }
                   style={{ fontFamily: 'var(--font-body)' }}
                 >

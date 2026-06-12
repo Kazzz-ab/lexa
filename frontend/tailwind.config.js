@@ -4,16 +4,16 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['Playfair Display', 'Georgia', 'serif'],
-        body: ['Source Serif 4', 'Georgia', 'serif'],
+        heading: ['Fraunces', 'Georgia', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
-        primary: { DEFAULT: '#1B3A6B', light: '#2E5FA3' },
-        accent: '#C9A84C',
+        primary: { DEFAULT: '#4C1D95', light: '#7C3AED' },
+        accent: '#8B5CF6',
       },
       boxShadow: {
-        card: '0 2px 12px rgba(27,58,107,0.07)',
-        'card-hover': '0 24px 48px rgba(27,58,107,0.18)',
+        card: '0 2px 12px rgba(76,29,149,0.07)',
+        'card-hover': '0 24px 48px rgba(76,29,149,0.18)',
       },
     },
   },

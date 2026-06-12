@@ -7,7 +7,7 @@ function RowMenu({ onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
-      <button onClick={(e) => { e.stopPropagation(); setOpen(o => !o); }} className="p-1.5 rounded-lg hover:bg-[#F5F2ED] text-[#6B6B7B]">
+      <button onClick={(e) => { e.stopPropagation(); setOpen(o => !o); }} className="p-1.5 rounded-lg hover:bg-[#F4F3F9] text-[#6B6B7B]">
         <MoreHorizontal size={15} />
       </button>
       <AnimatePresence>
@@ -16,9 +16,9 @@ function RowMenu({ onEdit, onDelete }) {
             <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
               className="absolute right-0 z-20 mt-1 w-40 rounded-xl overflow-hidden"
-              style={{ background: 'var(--surface)', boxShadow: '0 8px 24px rgba(27,58,107,0.12)', border: '1px solid rgba(201,168,76,0.15)' }}>
+              style={{ background: 'var(--surface)', boxShadow: '0 8px 24px rgba(76,29,149,0.12)', border: '1px solid rgba(139,92,246,0.15)' }}>
               <button onClick={() => { setOpen(false); onEdit(); }}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-[#F5F2ED] transition-colors"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-left hover:bg-[#F4F3F9] transition-colors"
                 style={{ fontFamily: 'var(--font-body)', color: 'var(--text)' }}>
                 <Pencil size={13} /> Edit Client
               </button>
@@ -66,13 +66,13 @@ function ClientModal({ client, onClose, onSave }) {
       </label>
       {options ? (
         <select value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-          style={{ fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' }}
+          style={{ fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.25)' }}
           className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none">
           {options.map(o => <option key={o.v || o} value={o.v || o}>{o.l || o}</option>)}
         </select>
       ) : (
         <input type={type} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-          style={{ fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' }}
+          style={{ fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.25)' }}
           className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none" />
       )}
     </div>
@@ -82,8 +82,8 @@ function ClientModal({ client, onClose, onSave }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(13,19,32,0.55)', backdropFilter: 'blur(4px)' }}>
       <motion.div initial={{ opacity: 0, scale: 0.95, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
         className="w-full max-w-lg rounded-xl overflow-hidden"
-        style={{ background: 'var(--surface)', boxShadow: '0 24px 64px rgba(27,58,107,0.2)', border: '1px solid rgba(201,168,76,0.2)' }}>
-        <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid rgba(201,168,76,0.12)' }}>
+        style={{ background: 'var(--surface)', boxShadow: '0 24px 64px rgba(76,29,149,0.2)', border: '1px solid rgba(139,92,246,0.2)' }}>
+        <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid rgba(139,92,246,0.12)' }}>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--text)' }}>
             {isEdit ? 'Edit Client' : 'Onboard New Client'}
           </h2>
@@ -100,19 +100,19 @@ function ClientModal({ client, onClose, onSave }) {
           <div className="col-span-2">
             <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '0.35rem', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Notes</label>
             <textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3}
-              style={{ fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)', fontStyle: 'italic' }}
+              style={{ fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.25)' }}
               className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none resize-none" />
           </div>
           <div className="col-span-2 flex gap-3 justify-end pt-2">
             <button type="button" onClick={onClose}
               className="px-5 py-2.5 rounded-lg text-sm font-medium text-[#6B6B7B]"
-              style={{ fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.2)' }}>
+              style={{ fontFamily: 'var(--font-body)', border: '1px solid rgba(139,92,246,0.2)' }}>
               Cancel
             </button>
             <motion.button type="submit" disabled={saving}
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               className="px-5 py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.2)' }}>
+              style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)', fontFamily: 'var(--font-body)', border: '1px solid rgba(139,92,246,0.2)' }}>
               {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Onboard Client'}
             </motion.button>
           </div>
@@ -155,14 +155,14 @@ export default function Clients() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>Clients</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.83rem', color: 'var(--muted)', marginTop: '0.2rem', fontStyle: 'italic' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.83rem', color: 'var(--muted)', marginTop: '0.2rem' }}>
             {total} clients on record
           </p>
         </div>
         <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           onClick={() => setModal('new')}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-semibold"
-          style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.25)', boxShadow: '0 4px 14px rgba(27,58,107,0.2)' }}>
+          style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)', fontFamily: 'var(--font-body)', border: '1px solid rgba(139,92,246,0.25)', boxShadow: '0 4px 14px rgba(76,29,149,0.2)' }}>
           <Plus size={15} /> Onboard Client
         </motion.button>
       </div>
@@ -171,13 +171,13 @@ export default function Clients() {
         <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B6B7B]" />
         <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           placeholder="Search clients…"
-          style={{ fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.2)', fontStyle: 'italic' }}
+          style={{ fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.2)' }}
           className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none" />
       </div>
 
-      <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
+      <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid rgba(139,92,246,0.15)', boxShadow: '0 2px 12px rgba(76,29,149,0.07)' }}>
         <div className="grid grid-cols-12 px-6 py-3 text-xs font-semibold text-[#6B6B7B] uppercase tracking-widest"
-          style={{ fontFamily: 'var(--font-body)', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+          style={{ fontFamily: 'var(--font-body)', borderBottom: '1px solid rgba(139,92,246,0.1)' }}>
           <div className="col-span-4">Client</div>
           <div className="col-span-2">Type</div>
           <div className="col-span-3">Company</div>
@@ -186,21 +186,21 @@ export default function Clients() {
         </div>
 
         {loading ? (
-          <div className="py-16 text-center text-[#6B6B7B]" style={{ fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>Loading…</div>
+          <div className="py-16 text-center text-[#6B6B7B]" style={{ fontFamily: 'var(--font-body)' }}>Loading…</div>
         ) : clients.length === 0 ? (
           <div className="py-16 text-center">
-            <Users size={32} className="mx-auto mb-3 text-[#C9A84C]/30" />
-            <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', fontStyle: 'italic' }}>No clients found</p>
+            <Users size={32} className="mx-auto mb-3 text-[#8B5CF6]/30" />
+            <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)' }}>No clients found</p>
           </div>
         ) : (
           <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.04 } } }}>
             {clients.map((c) => (
               <motion.div key={c._id} variants={itemVariant}
-                className="grid grid-cols-12 px-6 py-4 items-center hover:bg-[#F5F2ED] transition-colors cursor-pointer"
-                style={{ borderBottom: '1px solid rgba(201,168,76,0.06)' }}>
+                className="grid grid-cols-12 px-6 py-4 items-center hover:bg-[#F4F3F9] transition-colors cursor-pointer"
+                style={{ borderBottom: '1px solid rgba(139,92,246,0.06)' }}>
                 <div className="col-span-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-md flex items-center justify-center text-[#C9A84C] text-sm font-bold border border-[#C9A84C]/25 flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)' }}>
+                  <div className="w-9 h-9 rounded-md flex items-center justify-center text-[#8B5CF6] text-sm font-bold border border-[#8B5CF6]/25 flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)' }}>
                     {c.firstName.charAt(0)}
                   </div>
                   <div>
@@ -213,15 +213,15 @@ export default function Clients() {
                   <span className="px-2.5 py-1 rounded-md text-xs"
                     style={{
                       fontFamily: 'var(--font-body)',
-                      background: c.clientType === 'corporate' ? 'rgba(27,58,107,0.08)' : 'rgba(201,168,76,0.08)',
-                      color: c.clientType === 'corporate' ? '#1B3A6B' : '#8B6914',
+                      background: c.clientType === 'corporate' ? 'rgba(76,29,149,0.08)' : 'rgba(139,92,246,0.08)',
+                      color: c.clientType === 'corporate' ? '#4C1D95' : '#5B21B6',
                       border: '1px solid',
-                      borderColor: c.clientType === 'corporate' ? 'rgba(27,58,107,0.15)' : 'rgba(201,168,76,0.2)',
+                      borderColor: c.clientType === 'corporate' ? 'rgba(76,29,149,0.15)' : 'rgba(139,92,246,0.2)',
                     }}>
                     {c.clientType === 'corporate' ? 'Corporate' : 'Individual'}
                   </span>
                 </div>
-                <div className="col-span-3" style={{ fontFamily: 'var(--font-body)', fontSize: '0.83rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                <div className="col-span-3" style={{ fontFamily: 'var(--font-body)', fontSize: '0.83rem', color: 'var(--muted)' }}>
                   {c.company ? (
                     <div className="flex items-center gap-1.5"><Building2 size={12} /> {c.company}</div>
                   ) : '—'}
@@ -241,18 +241,18 @@ export default function Clients() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-5">
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--muted)' }}>
             Page {page} of {totalPages}
           </p>
           <div className="flex gap-2">
             <button disabled={page === 1} onClick={() => setPage(p => p - 1)}
-              className="p-2 rounded-lg disabled:opacity-40 hover:bg-[#F5F2ED]"
-              style={{ border: '1px solid rgba(201,168,76,0.2)' }}>
+              className="p-2 rounded-lg disabled:opacity-40 hover:bg-[#F4F3F9]"
+              style={{ border: '1px solid rgba(139,92,246,0.2)' }}>
               <ChevronLeft size={15} />
             </button>
             <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}
-              className="p-2 rounded-lg disabled:opacity-40 hover:bg-[#F5F2ED]"
-              style={{ border: '1px solid rgba(201,168,76,0.2)' }}>
+              className="p-2 rounded-lg disabled:opacity-40 hover:bg-[#F4F3F9]"
+              style={{ border: '1px solid rgba(139,92,246,0.2)' }}>
               <ChevronRight size={15} />
             </button>
           </div>

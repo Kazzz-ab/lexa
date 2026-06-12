@@ -6,20 +6,20 @@ export default function Ethics() {
   return (
     <div className="min-h-screen py-16 px-6" style={{ background: 'var(--bg)' }}>
       <div className="max-w-3xl mx-auto">
-        <Link to="/" className="flex items-center gap-2 hover:underline mb-8 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#1B3A6B' }}>
+        <Link to="/" className="flex items-center gap-2 hover:underline mb-8 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#4C1D95' }}>
           <ArrowLeft size={14} /> Back to Dashboard
         </Link>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-[#C9A84C]/30" style={{ background: 'linear-gradient(135deg,#1B3A6B,#2E5FA3)' }}>
-              <Scale size={17} className="text-[#C9A84C]" />
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center border border-[#8B5CF6]/30" style={{ background: 'linear-gradient(135deg,#4C1D95,#7C3AED)' }}>
+              <Scale size={17} className="text-[#8B5CF6]" />
             </div>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>
               Attorney Ethics Guidelines
             </h1>
           </div>
-          <div className="rounded-xl p-8 space-y-6" style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)' }}>
-            <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', fontSize: '0.85rem', fontStyle: 'italic' }}>Effective: June 2026 — Based on ABA Model Rules of Professional Conduct</p>
+          <div className="rounded-xl p-8 space-y-6" style={{ background: 'var(--surface)', border: '1px solid rgba(139,92,246,0.15)' }}>
+            <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', fontSize: '0.85rem' }}>Effective: June 2026 — Based on ABA Model Rules of Professional Conduct</p>
             {[
               { title: 'Competence (Rule 1.1)', body: 'Attorneys must provide competent representation, including the legal knowledge, skill, thoroughness, and preparation reasonably necessary. This system helps maintain organized case records to support competent representation.' },
               { title: 'Confidentiality (Rule 1.6)', body: 'All client information in this system is strictly confidential. Attorneys must not reveal information relating to client representation unless the client gives informed consent or disclosure is required by law.' },

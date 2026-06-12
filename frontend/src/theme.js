@@ -1,11 +1,10 @@
-// All UI copy and brand tokens live here.
-// Swap this file to repurpose the codebase for any vertical.
+// Lexa brand tokens and UI copy.
 export const brand = {
-  name: 'CounselFlow',
-  tagline: 'Modern law firm management',
+  name: 'Lexa',
+  tagline: 'Practice intelligence for law firms',
   // Tailwind color tokens (must exist in tailwind.config.js)
-  primary: 'indigo',
-  accent: 'amber',
+  primary: 'violet',
+  accent: 'purple',
 };
 
 export const copy = {

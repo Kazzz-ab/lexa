@@ -5,8 +5,8 @@ import { format } from 'date-fns';
 import api from '../lib/api.js';
 
 const ACTION_COLORS = {
-  CREATE: { bg: 'rgba(201,168,76,0.12)', color: '#C9A84C' },
-  UPDATE: { bg: 'rgba(27,58,107,0.1)', color: '#1B3A6B' },
+  CREATE: { bg: 'rgba(139,92,246,0.12)', color: '#8B5CF6' },
+  UPDATE: { bg: 'rgba(76,29,149,0.1)', color: '#4C1D95' },
   DELETE: { bg: 'rgba(234,88,12,0.1)', color: '#EA580C' },
 };
 
@@ -52,7 +52,7 @@ export default function AuditLog() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #1B3A6B, #C9A84C)' }}>
+              style={{ background: 'linear-gradient(135deg, #4C1D95, #8B5CF6)' }}>
               <ClipboardList size={18} className="text-white" />
             </div>
             <div>
@@ -67,13 +67,13 @@ export default function AuditLog() {
             <Filter size={15} className="text-[#94A3B8]" />
             <select value={filterResource} onChange={(e) => { setFilterResource(e.target.value); setPage(1); }}
               style={{ fontFamily: 'var(--font-body)' }}
-              className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20">
+              className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20">
               <option value="">All resources</option>
               {RESOURCES.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
             <select value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(1); }}
               style={{ fontFamily: 'var(--font-body)' }}
-              className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/20">
+              className="px-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20">
               <option value="">All actions</option>
               <option value="CREATE">CREATE</option>
               <option value="UPDATE">UPDATE</option>

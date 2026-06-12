@@ -26,7 +26,7 @@ function PasswordSection() {
     } finally { setSaving(false); }
   };
 
-  const inputStyle = { fontFamily: 'var(--font-body)', background: '#FDFBF8', border: '1px solid rgba(201,168,76,0.25)' };
+  const inputStyle = { fontFamily: 'var(--font-body)', background: '#FCFBFE', border: '1px solid rgba(139,92,246,0.25)' };
   const labelStyle = { fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em' };
 
   return (
@@ -48,7 +48,7 @@ function PasswordSection() {
               className="w-full pr-10 pl-4 py-2.5 rounded-lg text-sm focus:outline-none"
             />
             <button type="button" onClick={() => setShow({ ...show, [showKey]: !show[showKey] })}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B7B] hover:text-[#1B3A6B]">
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B7B] hover:text-[#4C1D95]">
               {show[showKey] ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
@@ -60,12 +60,12 @@ function PasswordSection() {
       <div className="flex items-center gap-3 pt-1">
         <motion.button type="submit" disabled={saving} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-60"
-          style={{ background: 'linear-gradient(135deg, #1B3A6B, #2E5FA3)', fontFamily: 'var(--font-body)', border: '1px solid rgba(201,168,76,0.2)' }}>
+          style={{ background: 'linear-gradient(135deg, #4C1D95, #7C3AED)', fontFamily: 'var(--font-body)', border: '1px solid rgba(139,92,246,0.2)' }}>
           <Lock size={14} /> {saving ? 'Updating…' : 'Update Password'}
         </motion.button>
         {message && (
           <motion.span initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-1.5 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#C9A84C', fontStyle: 'italic' }}>
+            className="flex items-center gap-1.5 text-sm" style={{ fontFamily: 'var(--font-body)', color: '#8B5CF6' }}>
             <CheckCircle2 size={14} /> {message}
           </motion.span>
         )}
@@ -81,18 +81,18 @@ export default function Settings() {
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>
           Settings
         </h1>
-        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', marginTop: '0.25rem', fontSize: '0.85rem', fontStyle: 'italic' }}>
+        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--muted)', marginTop: '0.25rem', fontSize: '0.85rem' }}>
           Manage your account security and preferences.
         </p>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         className="rounded-xl p-6"
-        style={{ background: 'var(--surface)', border: '1px solid rgba(201,168,76,0.15)', boxShadow: '0 2px 12px rgba(27,58,107,0.07)' }}>
+        style={{ background: 'var(--surface)', border: '1px solid rgba(139,92,246,0.15)', boxShadow: '0 2px 12px rgba(76,29,149,0.07)' }}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-8 h-8 rounded-md flex items-center justify-center border border-[#C9A84C]/25"
-            style={{ background: 'rgba(201,168,76,0.1)' }}>
-            <Lock size={14} style={{ color: '#C9A84C' }} />
+          <div className="w-8 h-8 rounded-md flex items-center justify-center border border-[#8B5CF6]/25"
+            style={{ background: 'rgba(139,92,246,0.1)' }}>
+            <Lock size={14} style={{ color: '#8B5CF6' }} />
           </div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.95rem', color: 'var(--text)' }}>
             Change Password

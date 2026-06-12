@@ -10,7 +10,7 @@ const daysFromNow = (n) => { const d = new Date(); d.setDate(d.getDate() + n); d
 const monthsAgo   = (n) => { const d = new Date(); d.setMonth(d.getMonth() - n); d.setDate(10); d.setHours(0,0,0,0); return d; };
 
 async function main() {
-  console.log('⚖️   Seeding CounselFlow...');
+  console.log('⚖️   Seeding Lexa...');
 
   await prisma.auditLog.deleteMany();
   await prisma.invoice.deleteMany();
@@ -20,13 +20,13 @@ async function main() {
   await prisma.user.deleteMany();
 
   // ── USERS ──────────────────────────────────────────────────────────────────
-  await             prisma.user.create({ data: { name: 'Admin User',         email: 'admin@counselflow.io',         password: await hash('Admin1234!'),    role: 'admin' } });
-  const uAshworth  = await prisma.user.create({ data: { name: 'Margaret Ashworth',  email: 'm.ashworth@counselflow.io',    password: await hash('Attorney1234!'), role: 'attorney' } });
-  const uPemberton = await prisma.user.create({ data: { name: 'James Pemberton',    email: 'j.pemberton@counselflow.io',   password: await hash('Attorney1234!'), role: 'attorney' } });
-  const uSterling  = await prisma.user.create({ data: { name: 'Alexandra Sterling', email: 'a.sterling@counselflow.io',    password: await hash('Attorney1234!'), role: 'attorney' } });
-  const uChang     = await prisma.user.create({ data: { name: 'David Chang',        email: 'd.chang@counselflow.io',       password: await hash('Attorney1234!'), role: 'attorney' } });
-  await             prisma.user.create({ data: { name: 'Rosalind Obi',       email: 'r.obi@counselflow.io',         password: await hash('Paralegal123!'), role: 'paralegal' } });
-  await             prisma.user.create({ data: { name: 'Theo Martens',       email: 't.martens@counselflow.io',     password: await hash('Paralegal123!'), role: 'paralegal' } });
+  await             prisma.user.create({ data: { name: 'Admin User',         email: 'admin@lexa.legal',         password: await hash('Admin1234!'),    role: 'admin' } });
+  const uAshworth  = await prisma.user.create({ data: { name: 'Margaret Ashworth',  email: 'm.ashworth@lexa.legal',    password: await hash('Attorney1234!'), role: 'attorney' } });
+  const uPemberton = await prisma.user.create({ data: { name: 'James Pemberton',    email: 'j.pemberton@lexa.legal',   password: await hash('Attorney1234!'), role: 'attorney' } });
+  const uSterling  = await prisma.user.create({ data: { name: 'Alexandra Sterling', email: 'a.sterling@lexa.legal',    password: await hash('Attorney1234!'), role: 'attorney' } });
+  const uChang     = await prisma.user.create({ data: { name: 'David Chang',        email: 'd.chang@lexa.legal',       password: await hash('Attorney1234!'), role: 'attorney' } });
+  await             prisma.user.create({ data: { name: 'Rosalind Obi',       email: 'r.obi@lexa.legal',         password: await hash('Paralegal123!'), role: 'paralegal' } });
+  await             prisma.user.create({ data: { name: 'Theo Martens',       email: 't.martens@lexa.legal',     password: await hash('Paralegal123!'), role: 'paralegal' } });
 
   // ── ATTORNEYS ──────────────────────────────────────────────────────────────
   const att1 = await prisma.attorney.create({ data: { userId: uAshworth.id,  barNumber: 'BAR-2015-001', practiceAreas: ['Corporate','M&A','Intellectual Property'], hourlyRate: 480, bio: 'Senior partner in cross-border M&A and technology licensing.' } });
@@ -66,26 +66,26 @@ async function main() {
   // ── CASES ──────────────────────────────────────────────────────────────────
   const yr = new Date().getFullYear();
   const caseDefs = [
-    { num:`CF-${yr}-0001`, title:'Corporate Merger — Series B',          cIdx:0,  aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'high',   mAgo:5, courtDays:null },
-    { num:`CF-${yr}-0002`, title:'Wrongful Termination — Reed v. Nexus', cIdx:1,  aIdx:1, area:'Employment Law',       type:'litigation',  status:'active',  priority:'medium', mAgo:5, courtDays:14 },
-    { num:`CF-${yr}-0003`, title:'Commercial Real Estate Closing',       cIdx:2,  aIdx:2, area:'Real Estate',          type:'real-estate', status:'closed',  priority:'low',    mAgo:5, courtDays:null },
-    { num:`CF-${yr}-0004`, title:'IP Licensing — SaaS Platform',         cIdx:3,  aIdx:0, area:'Intellectual Property',type:'corporate',   status:'active',  priority:'high',   mAgo:4, courtDays:null },
-    { num:`CF-${yr}-0005`, title:'Child Custody — Okonkwo',              cIdx:4,  aIdx:3, area:'Family Law',           type:'family',      status:'pending', priority:'urgent', mAgo:4, courtDays:7 },
-    { num:`CF-${yr}-0006`, title:'Series A Term Sheet Review',           cIdx:5,  aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'high',   mAgo:4, courtDays:null },
-    { num:`CF-${yr}-0007`, title:'Visa & Work Permit Application',       cIdx:6,  aIdx:3, area:'Immigration',          type:'immigration', status:'open',    priority:'medium', mAgo:3, courtDays:null },
-    { num:`CF-${yr}-0008`, title:'Construction Dispute — Westfield',     cIdx:7,  aIdx:2, area:'Construction Law',     type:'litigation',  status:'active',  priority:'high',   mAgo:3, courtDays:21 },
-    { num:`CF-${yr}-0009`, title:'Divorce Settlement — Moreau',          cIdx:8,  aIdx:3, area:'Family Law',           type:'family',      status:'pending', priority:'medium', mAgo:3, courtDays:null },
-    { num:`CF-${yr}-0010`, title:'Trust & Estate Administration',        cIdx:9,  aIdx:0, area:'Estate Planning',      type:'other',       status:'active',  priority:'medium', mAgo:2, courtDays:null },
-    { num:`CF-${yr}-0011`, title:'Unfair Dismissal — Frost v. Meridian', cIdx:10, aIdx:1, area:'Employment Law',       type:'litigation',  status:'active',  priority:'medium', mAgo:2, courtDays:30 },
-    { num:`CF-${yr}-0012`, title:'Franchise Agreement Review',           cIdx:11, aIdx:0, area:'Corporate Law',        type:'corporate',   status:'open',    priority:'low',    mAgo:2, courtDays:null },
-    { num:`CF-${yr}-0013`, title:'Non-compete Enforcement',              cIdx:12, aIdx:1, area:'Employment Law',       type:'litigation',  status:'pending', priority:'medium', mAgo:1, courtDays:10 },
-    { num:`CF-${yr}-0014`, title:'Cross-border Acquisition',             cIdx:13, aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'urgent', mAgo:1, courtDays:null },
-    { num:`CF-${yr}-0015`, title:'Permanent Residency Application',      cIdx:14, aIdx:3, area:'Immigration',          type:'immigration', status:'open',    priority:'medium', mAgo:1, courtDays:null },
-    { num:`CF-${yr}-0016`, title:'Commercial Lease Negotiation',         cIdx:7,  aIdx:2, area:'Real Estate',          type:'real-estate', status:'active',  priority:'low',    mAgo:1, courtDays:null },
-    { num:`CF-${yr}-0017`, title:'Data Privacy Compliance Audit',        cIdx:3,  aIdx:0, area:'Technology Law',       type:'corporate',   status:'open',    priority:'medium', mAgo:0, courtDays:null },
-    { num:`CF-${yr}-0018`, title:'Employment Contract Review',           cIdx:3,  aIdx:1, area:'Employment Law',       type:'other',       status:'open',    priority:'low',    mAgo:0, courtDays:null },
-    { num:`CF-${yr}-0019`, title:'Injunction Application',               cIdx:5,  aIdx:1, area:'Civil Litigation',     type:'litigation',  status:'pending', priority:'urgent', mAgo:0, courtDays:3 },
-    { num:`CF-${yr}-0020`, title:'Trademark Registration Filing',        cIdx:13, aIdx:0, area:'Intellectual Property',type:'corporate',   status:'open',    priority:'low',    mAgo:0, courtDays:null },
+    { num:`LX-${yr}-0001`, title:'Corporate Merger — Series B',          cIdx:0,  aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'high',   mAgo:5, courtDays:null },
+    { num:`LX-${yr}-0002`, title:'Wrongful Termination — Reed v. Nexus', cIdx:1,  aIdx:1, area:'Employment Law',       type:'litigation',  status:'active',  priority:'medium', mAgo:5, courtDays:14 },
+    { num:`LX-${yr}-0003`, title:'Commercial Real Estate Closing',       cIdx:2,  aIdx:2, area:'Real Estate',          type:'real-estate', status:'closed',  priority:'low',    mAgo:5, courtDays:null },
+    { num:`LX-${yr}-0004`, title:'IP Licensing — SaaS Platform',         cIdx:3,  aIdx:0, area:'Intellectual Property',type:'corporate',   status:'active',  priority:'high',   mAgo:4, courtDays:null },
+    { num:`LX-${yr}-0005`, title:'Child Custody — Okonkwo',              cIdx:4,  aIdx:3, area:'Family Law',           type:'family',      status:'pending', priority:'urgent', mAgo:4, courtDays:7 },
+    { num:`LX-${yr}-0006`, title:'Series A Term Sheet Review',           cIdx:5,  aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'high',   mAgo:4, courtDays:null },
+    { num:`LX-${yr}-0007`, title:'Visa & Work Permit Application',       cIdx:6,  aIdx:3, area:'Immigration',          type:'immigration', status:'open',    priority:'medium', mAgo:3, courtDays:null },
+    { num:`LX-${yr}-0008`, title:'Construction Dispute — Westfield',     cIdx:7,  aIdx:2, area:'Construction Law',     type:'litigation',  status:'active',  priority:'high',   mAgo:3, courtDays:21 },
+    { num:`LX-${yr}-0009`, title:'Divorce Settlement — Moreau',          cIdx:8,  aIdx:3, area:'Family Law',           type:'family',      status:'pending', priority:'medium', mAgo:3, courtDays:null },
+    { num:`LX-${yr}-0010`, title:'Trust & Estate Administration',        cIdx:9,  aIdx:0, area:'Estate Planning',      type:'other',       status:'active',  priority:'medium', mAgo:2, courtDays:null },
+    { num:`LX-${yr}-0011`, title:'Unfair Dismissal — Frost v. Meridian', cIdx:10, aIdx:1, area:'Employment Law',       type:'litigation',  status:'active',  priority:'medium', mAgo:2, courtDays:30 },
+    { num:`LX-${yr}-0012`, title:'Franchise Agreement Review',           cIdx:11, aIdx:0, area:'Corporate Law',        type:'corporate',   status:'open',    priority:'low',    mAgo:2, courtDays:null },
+    { num:`LX-${yr}-0013`, title:'Non-compete Enforcement',              cIdx:12, aIdx:1, area:'Employment Law',       type:'litigation',  status:'pending', priority:'medium', mAgo:1, courtDays:10 },
+    { num:`LX-${yr}-0014`, title:'Cross-border Acquisition',             cIdx:13, aIdx:0, area:'Corporate Law',        type:'corporate',   status:'active',  priority:'urgent', mAgo:1, courtDays:null },
+    { num:`LX-${yr}-0015`, title:'Permanent Residency Application',      cIdx:14, aIdx:3, area:'Immigration',          type:'immigration', status:'open',    priority:'medium', mAgo:1, courtDays:null },
+    { num:`LX-${yr}-0016`, title:'Commercial Lease Negotiation',         cIdx:7,  aIdx:2, area:'Real Estate',          type:'real-estate', status:'active',  priority:'low',    mAgo:1, courtDays:null },
+    { num:`LX-${yr}-0017`, title:'Data Privacy Compliance Audit',        cIdx:3,  aIdx:0, area:'Technology Law',       type:'corporate',   status:'open',    priority:'medium', mAgo:0, courtDays:null },
+    { num:`LX-${yr}-0018`, title:'Employment Contract Review',           cIdx:3,  aIdx:1, area:'Employment Law',       type:'other',       status:'open',    priority:'low',    mAgo:0, courtDays:null },
+    { num:`LX-${yr}-0019`, title:'Injunction Application',               cIdx:5,  aIdx:1, area:'Civil Litigation',     type:'litigation',  status:'pending', priority:'urgent', mAgo:0, courtDays:3 },
+    { num:`LX-${yr}-0020`, title:'Trademark Registration Filing',        cIdx:13, aIdx:0, area:'Intellectual Property',type:'corporate',   status:'open',    priority:'low',    mAgo:0, courtDays:null },
   ];
 
   const cases = [];
@@ -154,7 +154,7 @@ async function main() {
         clientId: clients[t.cIdx].id,
         caseId: cases[t.csIdx].id,
         attorneyId: atts[t.aIdx].id,
-        invoiceNumber: `INV-CL-${num}`,
+        invoiceNumber: `INV-LX-${num}`,
         billingType: t.billingType,
         lineItems: [lineItem],
         subtotal: amount, total: amount,
@@ -167,12 +167,12 @@ async function main() {
   }
   console.log(`  ✓ ${invDefs.length} invoices`);
 
-  console.log('\n✅  CounselFlow seeded!');
+  console.log('\n✅  Lexa seeded!');
   console.log('──────────────────────────────────────────────────────');
-  console.log('  admin@counselflow.io       →  Admin1234!    (admin)');
-  console.log('  m.ashworth@counselflow.io  →  Attorney1234! (attorney)');
-  console.log('  j.pemberton@counselflow.io →  Attorney1234! (attorney)');
-  console.log('  r.obi@counselflow.io       →  Paralegal123! (paralegal)');
+  console.log('  admin@lexa.legal       →  Admin1234!    (admin)');
+  console.log('  m.ashworth@lexa.legal  →  Attorney1234! (attorney)');
+  console.log('  j.pemberton@lexa.legal →  Attorney1234! (attorney)');
+  console.log('  r.obi@lexa.legal       →  Paralegal123! (paralegal)');
   console.log('──────────────────────────────────────────────────────\n');
 }
 
